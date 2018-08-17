@@ -44,6 +44,28 @@ module Registry
         end
       end
     end
+   
+    def inspect(name)
+      handle_block do 
+        result = @cmd.run(Helper::Command.inspect_image(name))
+      
+        if result.success?
+          {
+            success: true,
+            labels: Helper::ImageContent.parse_inspect(result.out)
+          }
+        else
+          {
+            success: false,
+            message: result.err
+          }
+        end
+      end
+    end
+
+    def extract_compose(name)
+      
+    end
 
     protected
     
