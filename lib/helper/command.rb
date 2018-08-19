@@ -17,7 +17,7 @@ module Helper
     end
     
     def self.extract_compose(name)
-      "docker run -i --rm #{name} cat #{Application.properties.compose_path}"
+      "docker run -i --rm #{name} cat #{Application.properties.compose_path}1"
     end
 
     def self.registry_image_name(name)

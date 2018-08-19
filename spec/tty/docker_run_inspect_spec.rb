@@ -22,9 +22,12 @@ describe 'tty client inspect' do
   context 'Success' do 
 
     it 'inspect an image' do
-      allow(dbl_inspect_result).to receive(:success?).and_return(true)
-      allow(dbl_inspect_result).to receive(:out).and_return(json_result_out)
-      allow_any_instance_of(TTY::Command).to receive(:run).and_return(dbl_inspect_result)
+      allow(dbl_inspect_result).to \
+        receive(:success?).and_return(true)
+      allow(dbl_inspect_result).to \
+        receive(:out).and_return(json_result_out)
+      allow_any_instance_of(TTY::Command).to \
+        receive(:run).and_return(dbl_inspect_result)
 
       result = tty_docker_run.inspect("#{RegistryAuth.configuration.registry}/postgres:9.5")
 
@@ -35,12 +38,16 @@ describe 'tty client inspect' do
 
   context 'No success' do
     it 'receives an error' do
-      allow(dbl_inspect_result).to receive(:exit_status).and_return('An error ocurred inspecting the image')
-      allow(dbl_inspect_result).to receive(:out).and_return('Nothing to inspect')
-      allow(dbl_inspect_result).to receive(:err).and_return('The image does not exists')
+      allow(dbl_inspect_result).to \
+        receive(:exit_status).and_return('An error ocurred inspecting the image')
+      allow(dbl_inspect_result).to \
+        receive(:out).and_return('Nothing to inspect')
+      allow(dbl_inspect_result).to \
+        receive(:err).and_return('The image does not exists')
       
       tty_exit_error = TTY::Command::ExitError.new('docker inspect', dbl_inspect_result)
-      allow_any_instance_of(TTY::Command).to receive(:run).and_raise(tty_exit_error)
+      allow_any_instance_of(TTY::Command).to \
+        receive(:run).and_raise(tty_exit_error)
       
       result = tty_docker_run.inspect("#{RegistryAuth.configuration.registry}/noimage:bro")
       expect(result[:success]).to eql(false)

@@ -64,7 +64,28 @@ module TTY
     end
 
     def extract_compose(name)
-      result = @cmd.run(Helper::Command.extract_compose(name))
+      TTY::StripeErrors.handle_block do
+        result = @cmd.run(Helper::Command.extract_compose(name))
+
+        unless result.success?
+          return {
+            success: false,
+            message: result.err
+          }
+        end
+
+        if Helper::Compose.validate(YAML.load(result.out))
+          {
+            success: true,
+            compose_content: result.out
+          }
+        else
+          {
+            success: false,
+            message: "The content for compose is invalid"
+          }
+        end
+      end
     end
     
   end

@@ -9,9 +9,12 @@ describe 'tty client pull' do
 
   context 'Success' do 
     it 'pull an image' do
-      allow_any_instance_of(TTY::DockerRun).to receive(:login).and_return(good_response)
-      allow(dbl_cmd_pull_result).to receive(:success?).and_return(true)
-      allow_any_instance_of(TTY::Command).to receive(:run).and_return(dbl_cmd_pull_result)
+      allow_any_instance_of(TTY::DockerRun).to \
+        receive(:login).and_return(good_response)
+      allow(dbl_cmd_pull_result).to \
+        receive(:success?).and_return(true)
+      allow_any_instance_of(TTY::Command).to \
+        receive(:run).and_return(dbl_cmd_pull_result)
       
       result = tty_docker_run.pull("#{RegistryAuth.configuration.registry}/postgres:9.5")
       expect(result[:success]).to eql(true)
@@ -21,9 +24,12 @@ describe 'tty client pull' do
   context 'No success' do
     it 'fail to pull an image that does not exists' do
       allow_any_instance_of(TTY::DockerRun).to receive(:login).and_return(good_response)
-      allow(dbl_cmd_pull_result).to receive(:exit_status).and_return('the image does not exists')
-      allow(dbl_cmd_pull_result).to receive(:out).and_return('not image')
-      allow(dbl_cmd_pull_result).to receive(:err).and_return('unable to find the image')
+      allow(dbl_cmd_pull_result).to \
+        receive(:exit_status).and_return('the image does not exists')
+      allow(dbl_cmd_pull_result).to \
+        receive(:out).and_return('not image')
+      allow(dbl_cmd_pull_result).to \
+        receive(:err).and_return('unable to find the image')
 
       tty_exit_error = TTY::Command::ExitError.new('docker pull', dbl_cmd_pull_result)
       allow_any_instance_of(TTY::Command).to receive(:run).and_raise(tty_exit_error)
