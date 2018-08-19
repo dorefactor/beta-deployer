@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'tty client inspect' do
-  let(:tty_client)          { Registry::TTYClient.new }
+  let(:tty_docker_run)          { TTY::DockerRun.new }
   let(:dbl_inspect_result)  { double('InspectResult') }
   let(:json_result_out) do
     %{[
@@ -26,7 +26,7 @@ describe 'tty client inspect' do
       allow(dbl_inspect_result).to receive(:out).and_return(json_result_out)
       allow_any_instance_of(TTY::Command).to receive(:run).and_return(dbl_inspect_result)
 
-      result = tty_client.inspect("#{RegistryAuth.configuration.registry}/postgres:9.5")
+      result = tty_docker_run.inspect("#{RegistryAuth.configuration.registry}/postgres:9.5")
 
       expect(result[:success]).to eql(true)
       expect(result[:labels].include?('service.host')).to eql(true)
@@ -42,7 +42,7 @@ describe 'tty client inspect' do
       tty_exit_error = TTY::Command::ExitError.new('docker inspect', dbl_inspect_result)
       allow_any_instance_of(TTY::Command).to receive(:run).and_raise(tty_exit_error)
       
-      result = tty_client.inspect("#{RegistryAuth.configuration.registry}/noimage:bro")
+      result = tty_docker_run.inspect("#{RegistryAuth.configuration.registry}/noimage:bro")
       expect(result[:success]).to eql(false)
       expect(result[:message].include?('stderr: The image does not exists')).to eql(true)
     end

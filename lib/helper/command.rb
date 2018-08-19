@@ -1,5 +1,6 @@
 module Helper
   class Command
+    
     def self.authenticate
       %{
         docker login #{RegistryAuth.configuration.host} \
@@ -15,6 +16,10 @@ module Helper
       "docker inspect #{name}"
     end
     
+    def self.extract_compose(name)
+      "docker run -i --rm #{name} cat #{Application.properties.compose_path}"
+    end
+
     def self.registry_image_name(name)
       "#{RegistryAuth.configuration.registry}/#{name}"
     end

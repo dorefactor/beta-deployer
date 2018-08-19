@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'yaml'
 describe 'tty client inspect' do
-  let(:tty_client)          { Registry::TTYClient.new }
+  let(:tty_docker_run)      { TTY::DockerRun.new }
   let(:dbl_inspect_result)  { double('InspectResult') }
   
   let(:image_name)          { 'nginx:9.5' }

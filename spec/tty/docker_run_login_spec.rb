@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'tty client login' do
 
-  let(:tty_client)  { Registry::TTYClient.new }
+  let(:tty_docker_run)  { TTY::DockerRun.new }
   
   context 'Success' do 
     let(:dbl_good_response) { double('CmdGoodResponse') }
@@ -11,7 +11,7 @@ describe 'tty client login' do
       allow(dbl_good_response).to receive(:success?).and_return(true)
 
       allow_any_instance_of(TTY::Command).to receive(:run).and_return(dbl_good_response)
-      result = tty_client.login
+      result = tty_docker_run.login
       expect(result[:success]).to eql(true)
     end
   end
@@ -27,7 +27,7 @@ describe 'tty client login' do
 
       allow_any_instance_of(TTY::Command).to receive(:run).and_raise(tty_exit_error)
 
-      result = tty_client.login
+      result = tty_docker_run.login
       expect(result[:success]).to eql(false)
       expect(result[:message].include?('not allowed to login')).to eql(true)
     end
