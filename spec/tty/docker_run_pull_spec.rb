@@ -13,11 +13,15 @@ describe 'tty client pull' do
         receive(:login).and_return(good_response)
       allow(dbl_cmd_pull_result).to \
         receive(:success?).and_return(true)
+      allow(dbl_cmd_pull_result).to \
+        receive(:out).and_return(:empty)
+        allow(dbl_cmd_pull_result).to \
+        receive(:err).and_return(:empty)
       allow_any_instance_of(TTY::Command).to \
         receive(:run).and_return(dbl_cmd_pull_result)
       
       result = tty_docker_run.pull("#{RegistryAuth.configuration.registry}/postgres:9.5")
-      expect(result[:success]).to eql(true)
+      expect(result.success?).to eql(true)
     end
   end
 
@@ -35,8 +39,8 @@ describe 'tty client pull' do
       allow_any_instance_of(TTY::Command).to receive(:run).and_raise(tty_exit_error)
       
       result = tty_docker_run.pull('noimage:bro')
-      expect(result[:success]).to eql(false)
-      expect(result[:message].include?('stderr: unable to find the image')).to eql(true)
+      expect(result.success?).to eql(false)
+      expect(result.err.include?('stderr: unable to find the image')).to eql(true)
     end
   end
 end

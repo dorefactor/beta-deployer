@@ -12,17 +12,24 @@ module Registry
     end
 
     def ping
-      @client.ping
+      Registry::StripeErrors.handle_block do
+        result = @client.ping
+        RegularDeployer::Result.create_successful result
+      end
     end
 
     def _catalog_v2(limit = '?n=100')
-      @client.doget("/v2/_catalog")
+      Registry::StripeErrors.handle_block do
+        result = @client.doget("/v2/_catalog") 
+        RegularDeployer::Result.create_successful result
+      end
     end
 
     def tags(name)
       Registry::StripeErrors.handle_block do
         withHashes = true
-        @client.tags(name, withHashes)
+        result = @client.tags(name, withHashes)
+        RegularDeployer::Result.create_successful result
       end
     end
 

@@ -31,16 +31,19 @@ describe 'tty client extract compose' do
   context 'Success' do
     it 'extract compose' do
       dbl_command_response = double('DockerRunCatDockerCompose')
+      
+      allow(dbl_command_response).to \
+        receive(:success?).and_return(true)
       allow(dbl_command_response).to \
         receive(:out).and_return(good_compose_string_result)
       allow(dbl_command_response).to \
-        receive(:success?).and_return(true)
+        receive(:err).and_return(:empty)
       
       allow_any_instance_of(TTY::Command).to \
         receive(:run).and_return(dbl_command_response)
       
         result = tty_docker_client.extract_compose('label_alpine:3.6')
-      expect(result[:success]).to eql(true)
+      expect(result.success?).to eql(true)
     end
   end
 
@@ -49,16 +52,18 @@ describe 'tty client extract compose' do
       dbl_command_response = double('DockerRunCatDockerCompose')
 
       allow(dbl_command_response).to \
-        receive(:out).and_return(bad_compose_string_result)
-      allow(dbl_command_response).to \
         receive(:success?).and_return(true)
+      allow(dbl_command_response).to \
+        receive(:out).and_return(bad_compose_string_result)
+        allow(dbl_command_response).to \
+        receive(:err).and_return(:empty)
       
       allow_any_instance_of(TTY::Command).to \
         receive(:run).and_return(dbl_command_response)
       
-        result = tty_docker_client.extract_compose('label_alpine:3.6')
-      expect(result[:success]).to eql(false)
-      expect(result[:message].include?('The content for compose is invalid')).to eql(true)
+      result = tty_docker_client.extract_compose('label_alpine:3.6')
+      expect(result.success?).to eql(false)
+      expect(result.err.include?('The content for compose is invalid')).to eql(true)
     end
 
     it 'raise error' do

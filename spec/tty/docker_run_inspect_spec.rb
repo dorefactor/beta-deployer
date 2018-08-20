@@ -26,13 +26,15 @@ describe 'tty client inspect' do
         receive(:success?).and_return(true)
       allow(dbl_inspect_result).to \
         receive(:out).and_return(json_result_out)
+      allow(dbl_inspect_result).to \
+        receive(:err).and_return(:empty)
       allow_any_instance_of(TTY::Command).to \
         receive(:run).and_return(dbl_inspect_result)
 
       result = tty_docker_run.inspect("#{RegistryAuth.configuration.registry}/postgres:9.5")
 
-      expect(result[:success]).to eql(true)
-      expect(result[:labels].include?('service.host')).to eql(true)
+      expect(result.success?).to eql(true)
+      expect(result.out.include?('service.host')).to eql(true)
     end
   end
 
@@ -50,8 +52,8 @@ describe 'tty client inspect' do
         receive(:run).and_raise(tty_exit_error)
       
       result = tty_docker_run.inspect("#{RegistryAuth.configuration.registry}/noimage:bro")
-      expect(result[:success]).to eql(false)
-      expect(result[:message].include?('stderr: The image does not exists')).to eql(true)
+      expect(result.success?).to eql(false)
+      expect(result.err.include?('stderr: The image does not exists')).to eql(true)
     end
   end
 

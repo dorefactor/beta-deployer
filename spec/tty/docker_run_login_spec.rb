@@ -9,11 +9,12 @@ describe 'tty client login' do
 
     it 'Login success' do 
       allow(dbl_good_response).to receive(:success?).and_return(true)
+      allow(dbl_good_response).to receive(:out).and_return(:empty)
+      allow(dbl_good_response).to receive(:err).and_return(:empty)
 
-      allow_any_instance_of(TTY::Command).to \
-        receive(:run).and_return(dbl_good_response)
+      allow_any_instance_of(TTY::Command).to receive(:run).and_return(dbl_good_response)
       result = tty_docker_run.login
-      expect(result[:success]).to eql(true)
+      expect(result.success?).to eql(true)
     end
   end
 
@@ -32,8 +33,8 @@ describe 'tty client login' do
       allow_any_instance_of(TTY::Command).to receive(:run).and_raise(tty_exit_error)
 
       result = tty_docker_run.login
-      expect(result[:success]).to eql(false)
-      expect(result[:message].include?('not allowed to login')).to eql(true)
+      expect(result.success?).to eql(false)
+      expect(result.err.include?('not allowed to login')).to eql(true)
     end
   end
 

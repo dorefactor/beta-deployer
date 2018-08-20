@@ -6,45 +6,21 @@ module Registry
     def self.handle_block
       yield
     rescue DockerRegistry2::RegistryAuthenticationException => e 
-      {
-        success: false,
-        message: 'RegistryAuthenticationException'
-      }
+      RegularDeployer::Result.create_error('RegistryAuthenticationException')
     rescue DockerRegistry2::RegistryAuthorizationException => e 
-      {
-        success: false,
-        message: 'RegistryAuthorizationException'
-      }
+      RegularDeployer::Result.create_error('RegistryAuthorizationException')
     rescue DockerRegistry2::RegistryUnknownException => e
-      {
-        success: false,
-        message: 'RegistryUnknownException'
-      }
+      RegularDeployer::Result.create_error('RegistryUnknownException')
     rescue DockerRegistry2::RegistrySSLException => e
-      {
-        success: false,
-        message: 'RegistrySSLException'
-      }
+      RegularDeployer::Result.create_error('RegistrySSLException')
     rescue DockerRegistry2::ReauthenticatedException => e
-      {
-        success: false,
-        message: 'ReauthenticatedException'
-      }
+      RegularDeployer::Result.create_error('ReauthenticatedException')
     rescue DockerRegistry2::UnknownRegistryException => e
-      {
-        success: false,
-        message: 'UnknownRegistryException'
-      }
+      RegularDeployer::Result.create_error('UnknownRegistryException')
     rescue DockerRegistry2::NotFound => e
-      {
-        success: false,
-        message: 'NotFound'
-      }
+      RegularDeployer::Result.create_error('NotFound')
     rescue DockerRegistry2::InvalidMethod => e
-      {
-        success: false,
-        message: 'InvalidMethod'
-      }
+      RegularDeployer::Result.create_error('InvalidMethod')
     end
   end
 end
