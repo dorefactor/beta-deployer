@@ -4,6 +4,7 @@ require 'config/application'
 require 'result/result'
 
 require 'helper/command'
+require 'helper/logging'
 require 'helper/image_content'
 require 'helper/compose'
 

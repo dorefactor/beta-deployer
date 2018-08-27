@@ -2,12 +2,14 @@ require 'spec_helper'
 
 describe 'Registry client' do
 
-  let(:docker_registry2_dummy) {DockerRegistry2::Registry.new('uri',{})}
+  let(:docker_registry2_dummy) { DockerRegistry2::Registry.new('uri',{}) }
 
   let(:good_response_v2_catalog) do
-    {
-      'repositories': ['demo1', 'demo2']
-    }
+    <<-JSON
+      { 
+        "repositories": ["demo1", "demo2"] 
+      }
+    JSON
   end
 
   let(:good_response_tag) do
@@ -20,6 +22,7 @@ describe 'Registry client' do
   it 'Create new instances' do 
     allow(DockerRegistry2).to receive(:connect).and_return(docker_registry2_dummy)
     client = Registry::Client.new
+    expect(client.login?).to eql(true)
     expect(client).not_to eql(nil)
   end
 
@@ -39,7 +42,7 @@ describe 'Registry client' do
     client = Registry::Client.new()
     _catalog_v2_result = client._catalog_v2
     expect(_catalog_v2_result.out).to be_instance_of(Hash)
-    expect(_catalog_v2_result.out[:repositories]).to be_instance_of(Array)
+    expect(_catalog_v2_result.out['repositories']).to be_instance_of(Array)
   end
 
   it 'Perform a client tag  for an image info call' do

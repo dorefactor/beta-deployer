@@ -37,6 +37,4 @@ describe 'tty client inspect' do
     end
     
   end
-   
-
 end
