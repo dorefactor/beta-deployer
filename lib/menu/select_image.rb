@@ -2,7 +2,7 @@ module Menu
   class SelectImage
     
     def self.select_options
-      registy_client = registy_client
+      registy_client = Registry::Client.new
       result_catalog = registy_client._catalog_v2
       
       images = self.build_option_response(result_catalog, 'repositories')
@@ -12,16 +12,14 @@ module Menu
         return images
       end
 
-      Menu.prompt
       selected_option = Menu.prompt.select('Choose an image', images.options )
+
+      
       
       
     end
 
-    # def get_images
-      
-    #   build_option_response(result_catalog, 'repositories')
-    # end
+
 
     # def get_tags(image)
     #   result_tag = @registy_client.tags(image)
