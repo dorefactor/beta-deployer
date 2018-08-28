@@ -2,3 +2,4 @@
 /vendor/bundle
 Gemfile.lock
 task
+load_env.sh

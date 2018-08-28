@@ -1,28 +1,24 @@
 
-require_relative 'lib/menu/prompt'
-
 $LOAD_PATH.unshift(File.expand_path('../lib', __FILE__))
 require 'init'
 
-##proto for menu
+##inits 
+main_loop = true
+main_menu = Menu::Main.new
 
-registry_client = Registry::Client.new
+while(main_loop)
 
-# registry_client.login?
+  result = main_menu.select_options
+  main_loop = result.continue?
 
-choices_images = registry_client._catalog_v2.out['repositories']
-choices_images << '<< Back'
-image = Menu.prompt.select('Choose an image', choices_images )
+  
 
-# ##Return if not <<back
 
-# ##let's go for tags
-# registry_image = "image full name: #{RegistryAuth.configuration.registry}/#{image}"
-# puts registry_image
 
-# choices_images = registry_client.tags(image).out['tags']
-# choices_images << '<< Back'
+end
 
-# tag = Menu.prompt.select('Choose a tag', choices_images )
-# registry_image_full = "image full name: #{RegistryAuth.configuration.registry}/#{image}:#{tag}"
-# puts registry_image_full
+
+
+
+
+
