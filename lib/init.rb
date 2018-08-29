@@ -3,6 +3,7 @@ require 'config/application'
 
 require 'result/result'
 require 'result/menu_result'
+require 'result/selected_option_result'
 
 require 'helper/command'
 require 'helper/logging'

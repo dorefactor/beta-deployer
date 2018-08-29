@@ -30,8 +30,8 @@ module Menu
       unless images.continue?
         return RegularDeployer::MenuResult.new(false)
       end
-
-      Menu.prompt.select('Select an image: ', images.options)
+      
+      prompt_options('Select an image: ', images.options)
     end
 
     def select_tag(selected_image)
@@ -42,22 +42,27 @@ module Menu
         return RegularDeployer::MenuResult.new(false)
       end
 
-      Menu.prompt.select('Select a tag: ', tags.options)
+      prompt_options('Select an tag: ', tags.options)
     end
 
     def select_image_from_catalog
       
       selected_image = select_image
-      return if selected_image == '<< Back'
+      return unless selected_image.valid?
 
-      selected_tag = select_tag(selected_image)
-      return if selected_tag == '<< Back'
+      selected_tag = select_tag(selected_image.option)
+      return unless selected_tag.valid?
 
-      Helper::Logging.debug("Image to deploy: #{selected_image}:#{selected_tag}")
+      Helper::Logging.debug("Image to deploy: #{selected_image.option}:#{selected_tag.option}")
     end
     
     private
     
+    def prompt_options(title, options)
+      selected = Menu.prompt.select(title, options)
+      RegularDeployer::SelectedOptionResult.new(selected)
+    end
+
     def print_header
       puts %{
         Welcome to RegularDeployer version 0.1}
