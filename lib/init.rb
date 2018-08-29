@@ -16,5 +16,6 @@ require 'menu/select_image'
 require 'menu/prompt'
 
 require 'registry/client'
+require 'registry/http_client'
 
 require 'tty/docker_run'

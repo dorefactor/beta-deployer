@@ -1,5 +1,5 @@
 require 'tty/stripe_errors'
-
+require 'tty-command'
 module TTY
   class DockerRun
     def initialize()
@@ -8,7 +8,6 @@ module TTY
     end
 
     def login
-
       TTY::StripeErrors.handle_block do 
         result = @cmd.run(Helper::Command.authenticate, input: "#{RegistryAuth.configuration.password}")
         @authenticated = result.success?
@@ -16,10 +15,23 @@ module TTY
       end
     end
 
+    def clean_image(name)
+      @cmd.run(Helper::Command.stop_container(name), only_output_on_error: true)
+      @cmd.run(Helper::Command.rm_container(name), only_output_on_error: true)
+      @cmd.run(Helper::Command.rmi(name),  only_output_on_error: true)
+    end
+
     def pull(name)
       TTY::StripeErrors.handle_block do 
         login unless @authenticated
         result = @cmd.run(Helper::Command.pull_image(name))
+        RegularDeployer::Result.new(result.success?, result.out, result.err)
+      end
+    end
+
+    def pull_from_registry(name)
+      TTY::StripeErrors.handle_block do 
+        result = @cmd.run(Helper::Command.pull_image_from_registry(name))
         RegularDeployer::Result.new(result.success?, result.out, result.err)
       end
     end

@@ -6,7 +6,9 @@ module Menu
         'Deploy an image',
         '<< Exit'
       ]
-      @registy_client = Registry::Client.new
+
+      @registy_http_client = Registry::HttpClient.new
+      @tty_docker_run = TTY::DockerRun.new
     end
 
     def select_options
@@ -24,7 +26,7 @@ module Menu
     end
 
     def select_image
-      result_catalog = @registy_client._catalog_v2
+      result_catalog = @registy_http_client._catalog_v2
       images = build_option_response(result_catalog, 'repositories')
       
       unless images.continue?
@@ -35,7 +37,7 @@ module Menu
     end
 
     def select_tag(selected_image)
-      result_tags = @registy_client.tags(selected_image)
+      result_tags = @registy_http_client.tags(selected_image)
       tags = build_option_response(result_tags, 'tags')
 
       unless tags.continue?
@@ -53,7 +55,12 @@ module Menu
       selected_tag = select_tag(selected_image.option)
       return unless selected_tag.valid?
 
-      Helper::Logging.debug("Image to deploy: #{selected_image.option}:#{selected_tag.option}")
+      final_selected_image = "#{selected_image.option}:#{selected_tag.option}"
+      Helper::Logging.debug("Image to deploy: #{final_selected_image}")
+
+      @tty_docker_run.clean_image(final_selected_image)
+      @tty_docker_run.pull_from_registry(final_selected_image)
+      
     end
     
     private
