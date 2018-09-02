@@ -14,6 +14,10 @@ module Helper
       self.log.debug message
     end
 
+    def self.error(message)
+      self.log.error message
+    end
+
     def self.info(message)
       self.log.info message
     end

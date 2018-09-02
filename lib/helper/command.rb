@@ -33,11 +33,24 @@ module Helper
     end
     
     def self.extract_compose(name)
-      "docker run -i --rm #{name} cat #{Application.properties.compose_path}"
+      "docker run -i --rm #{self.registry_image_name(name)} cat #{Application.properties.compose_path}"
     end
 
     def self.registry_image_name(name)
       "#{RegistryAuth.configuration.registry}/#{name}"
     end
+
+    def self.docker_compose_down(path)
+      "docker-compose -f #{path}/docker-compose.yml down || true"
+    end
+
+    def self.docker_compose_up(path)
+      "docker-compose -f #{path} up -d"
+    end
+
+    def self.docker_compose_ps(path)
+      "docker-compose -f #{path} ps"
+    end
+
   end
 end

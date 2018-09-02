@@ -1,85 +1,39 @@
+require_relative './interactor_main'
+
 module Menu
   class Main
 
     def initialize
-      @options = [
-        'Deploy an image',
-        '<< Exit'
-      ]
-
-      @registy_http_client = Registry::HttpClient.new
-      @tty_docker_run = TTY::DockerRun.new
-    end
-
-    def select_options
-      print_header
-      selected_option = Menu.prompt.select('Choose an image', @options )
-
-      case selected_option
-      when '<< Exit'
-        puts "Byeee"
-        return RegularDeployer::MenuResult.new(false)
-      when 'Deploy an image'
-        select_image_from_catalog
-        RegularDeployer::MenuResult.new(true)
-      end
-    end
-
-    def select_image
-      result_catalog = @registy_http_client._catalog_v2
-      images = build_option_response(result_catalog, 'repositories')
-      
-      unless images.continue?
-        return RegularDeployer::MenuResult.new(false)
-      end
-      
-      prompt_options('Select an image: ', images.options)
-    end
-
-    def select_tag(selected_image)
-      result_tags = @registy_http_client.tags(selected_image)
-      tags = build_option_response(result_tags, 'tags')
-
-      unless tags.continue?
-        return RegularDeployer::MenuResult.new(false)
-      end
-
-      prompt_options('Select an tag: ', tags.options)
+      @main_interactor = Menu::InteractorMain.new
+      @deployer = Deployer::Image.new
     end
 
     def select_image_from_catalog
       
-      selected_image = select_image
+      selected_action = @main_interactor.select_action
+
+      case selected_action.option
+      when '<< Exit'
+        puts "Byeee"
+        return RegularDeployer::MenuResult.new(false)
+      when 'Deploy an image'
+        select_image_and_tag
+        return RegularDeployer::MenuResult.new(true)
+      end
+    end
+    
+    def select_image_and_tag
+      selected_image = @main_interactor.select_image
       return unless selected_image.valid?
 
-      selected_tag = select_tag(selected_image.option)
+      selected_tag = @main_interactor.select_tag(selected_image.option)
       return unless selected_tag.valid?
 
       final_selected_image = "#{selected_image.option}:#{selected_tag.option}"
       Helper::Logging.debug("Image to deploy: #{final_selected_image}")
 
-      @tty_docker_run.clean_image(final_selected_image)
-      @tty_docker_run.pull_from_registry(final_selected_image)
-      
+      @deployer.run(final_selected_image)
     end
     
-    private
-    
-    def prompt_options(title, options)
-      selected = Menu.prompt.select(title, options)
-      RegularDeployer::SelectedOptionResult.new(selected)
-    end
-
-    def print_header
-      puts %{
-        Welcome to RegularDeployer version 0.1}
-    end
-
-    def build_option_response(result, source)
-      choices = result.success? ? result.out[source]  : Array.new
-      choices << "<< Back"
-      RegularDeployer::MenuResult.new(result.success?, choices)
-    end
-
   end
 end

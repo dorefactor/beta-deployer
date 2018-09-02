@@ -53,11 +53,9 @@ module Registry
     def stripe_error
       yield
     rescue Net::HTTPServerException => e
-      Helper::Logging.error e.to_s
-      RegularDeployer::Result.new(false, :empty, e.to_s)
+      RegularDeployer::Result.create_error(e.to_s)
     rescue Exception => e
-      Helper::Logging.error e.to_s
-      RegularDeployer::Result.new(false, :empty, e.to_s)
+      RegularDeployer::Result.create_error(e.to_s)
     end
 
   end

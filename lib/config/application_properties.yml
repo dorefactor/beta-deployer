@@ -1,1 +1,2 @@
 compose_path: '/opt/dorefactor/docker-compose.yml'
+workspace_path: 'workspace'

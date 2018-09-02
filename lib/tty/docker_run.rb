@@ -43,6 +43,27 @@ module TTY
       end
     end
 
+    def docker_compose_down(path)
+      TTY::StripeErrors.handle_block do 
+        result = @cmd.run(Helper::Command.docker_compose_down(path), only_output_on_error: true)
+        RegularDeployer::Result.new(result.success?, result.out, result.err)
+      end
+    end
+
+    def docker_compose_up(path)
+      TTY::StripeErrors.handle_block do 
+        result = @cmd.run(Helper::Command.docker_compose_up(path))
+        RegularDeployer::Result.new(result.success?, result.out, result.err)
+      end
+    end
+
+    def docker_compose_ps(path)
+      TTY::StripeErrors.handle_block do 
+        result = @cmd.run(Helper::Command.docker_compose_ps(path))
+        RegularDeployer::Result.new(result.success?, result.out, result.err)
+      end
+    end
+    
     def extract_compose(name)
       TTY::StripeErrors.handle_block do
         result = @cmd.run(Helper::Command.extract_compose(name))

@@ -5,6 +5,7 @@ module RegularDeployer
     attr_reader :err
 
     def self.create_error(err)
+      Helper::Logging.error(err)
       RegularDeployer::Result.new(false, :empty, err)
     end
 
