@@ -2,6 +2,7 @@ module Workspace
   class Folder
 
     def self.recreate(path)
+      Helper::Logging.info("Recreating workspace: #{path}...")
       self.delete(path)
       self.create(path)
     end
