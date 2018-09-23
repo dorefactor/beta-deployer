@@ -4,6 +4,7 @@ module Menu
     def initialize
       @action_options = [
         'Deploy an image',
+        'List containers',
         '<< Exit'
       ]
 

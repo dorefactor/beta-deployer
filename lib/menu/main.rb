@@ -19,9 +19,18 @@ module Menu
       when 'Deploy an image'
         select_image_and_tag
         return RegularDeployer::MenuResult.new(true)
+      when 'List containers'
+        docker_ps
+        return RegularDeployer::MenuResult.new(true)
       end
     end
     
+    private
+
+    def docker_ps
+      @deployer.ps
+    end
+
     def select_image_and_tag
       selected_image = @main_interactor.select_image
       return unless selected_image.valid?

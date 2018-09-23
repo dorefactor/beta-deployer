@@ -5,6 +5,10 @@ module Deployer
       @tty_docker_run = TTY::DockerRun.new
     end
 
+    def ps
+      @tty_docker_run.docker_general_ps
+    end
+
     def run(final_selected_image)
       ##Crete the workspace
       workspace_struct = Deployer::WorkspaceStruct.new(final_selected_image)

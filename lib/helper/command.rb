@@ -44,6 +44,10 @@ module Helper
       "docker-compose -f #{path}/docker-compose.yml down || true"
     end
 
+    def self.docker_ps
+      "docker ps -a --format \"table {{.Image}}\t {{.Ports}}\""
+    end
+
     def self.docker_compose_up(path)
       "docker-compose -f #{path} up -d"
     end

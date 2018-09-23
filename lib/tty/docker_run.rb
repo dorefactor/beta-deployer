@@ -63,6 +63,13 @@ module TTY
         RegularDeployer::Result.new(result.success?, result.out, result.err)
       end
     end
+
+    def docker_general_ps
+      TTY::StripeErrors.handle_block do 
+        result = @cmd.run(Helper::Command.docker_ps)
+        # RegularDeployer::Result.new(result.success?, result.out, result.err)
+      end
+    end
     
     def extract_compose(name)
       TTY::StripeErrors.handle_block do
